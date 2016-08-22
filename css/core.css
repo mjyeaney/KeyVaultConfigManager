@@ -42,3 +42,14 @@ a { text-decoration: none; }
 #leftMenu ul li a { text-decoration: none; color: #4a4a4a; display: block; padding: .25em;}
 #leftMenu #footer { position: absolute; bottom: 1em; right: 0; left: 0; }
 #leftMenu #footer p { text-align: center; }
+
+/* Content */
+#content { position: absolute; left: 22em; bottom: 0; top: 7em; right: 0; overflow-y: scroll; }
+#content p.waterMark {
+    top: 40%;
+    position: absolute;
+    text-align: center;
+    left: 0;
+    right: 0;
+    font-size: 1.25em;
+}
