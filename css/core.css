@@ -6,7 +6,7 @@ h1, h2, h3 { font-weight: 100; }
 a { text-decoration: none; }
 
 /* Header */
-#header { background-color: #24548e; padding: 1em; position: relative; }
+#header { background-color: #315; padding: 1em; position: relative; }
 #header h1 { 
     color: #fff;
     line-height: 2em;
