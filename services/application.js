@@ -10,6 +10,18 @@ Contains the main application logic/workflow
         scope.Application = {};
     }
 
+    var listKeyVaults = function(){
+
+    };
+
+    var createKeyVault = function(){
+
+    };
+
+    var listVaultKeys = function(vaultName){
+
+    };
+
     // Export methods
-    
+
 })(this);
