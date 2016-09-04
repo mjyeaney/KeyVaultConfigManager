@@ -22,3 +22,8 @@ Replace settings in this file with your own.
     scope.Settings.DefaultTokenLifetimeSec = 300;
     
 })(this);
+
+// Apply local settings (if found)
+try {
+    require('./settings.local.js');
+} catch (e) { }
