@@ -10,7 +10,7 @@
 //
 var express = require('express'),
     settings = require('./settings.js').Settings,
-    adalTokens = require('./services/adalTokenCache.js');
+    adalTokenCache = require('./services/adalTokenCache.js').TokenCache;
     
 // Init the express engine
 var app = express();

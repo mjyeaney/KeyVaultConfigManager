@@ -13,18 +13,21 @@ using the ADAL library.
 
     var settings = require('../settings.js').Settings;
 
-    console.log(settings);  
+    // local log function
+    function logMsg(msg){
+        console.log("[adalTokenCache]:: " + msg)
+    }
 
     // our cache store
     var _tokenCache = {};
 
     // auto refresh of token, as per settings interval
     function refreshToken(){
-        console.log("Refreshing cached tokens...");
+        logMsg("Refreshing cached tokens...");
     };
 
     // Create background job to refresh token
-    console.log("Starting token cache services...");
+    logMsg("Starting token cache services...");
     setInterval(refreshToken, settings.DefaultTokenLifetimeSec * 1000)
 
     // Simply returns the active token

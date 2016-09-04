@@ -58,7 +58,7 @@ context.acquireTokenWithClientCredentials(resource, clientId, clientSecret, func
 */
         // Get Keys
         function(callback){
-            console.log("TODO: Getting list of keys from vault...");
+            console.log("Getting list of keys from vault...");
             var client = new KeyVault.KeyVaultClient(credentials);
             client.getSecrets('https://mjysamplekeyvault.vault.azure.net', function(err, results){
                 if (err){
