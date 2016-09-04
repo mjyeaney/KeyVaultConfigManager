@@ -11,10 +11,9 @@ using the ADAL library.
         scope.TokenCache = {};
     }
 
-    // Make sure our settings our available
-    if (!scope.Settings){
-        throw "Required module 'Settings' not detected..."
-    }
+    var settings = require('../settings.js').Settings;
+
+    console.log(settings);  
 
     // our cache store
     var _tokenCache = {};
@@ -25,8 +24,8 @@ using the ADAL library.
     };
 
     // Create background job to refresh token
-    console.log("Starting cache services...");
-    setInterval(refreshToken, settings.DefaultTokenLifetimeSec)
+    console.log("Starting token cache services...");
+    setInterval(refreshToken, settings.DefaultTokenLifetimeSec * 1000)
 
     // Simply returns the active token
     function acquireToken(resourceUri){

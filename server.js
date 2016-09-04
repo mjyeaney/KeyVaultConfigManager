@@ -8,7 +8,9 @@
 //
 // Pull in libs and bootstrap express application
 //
-var express = require('express');
+var express = require('express'),
+    settings = require('./settings.js').Settings,
+    adalTokens = require('./services/adalTokenCache.js');
     
 // Init the express engine
 var app = express();
