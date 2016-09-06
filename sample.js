@@ -1,3 +1,8 @@
+// Fiddler magic
+// process.env.https_proxy = "http://127.0.0.1:8888";
+// process.env.http_proxy = "http://127.0.0.1:8888";
+// process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
 // Module imports
 var settings = require('./settings.js').Settings;
 var async = require('async');
@@ -36,8 +41,10 @@ context.acquireTokenWithClientCredentials(resource, clientId, clientSecret, func
         token : tokenResponse.accessToken
     });
 
-    // Creates an Azure Key Vault Management client.
-    client = new keyVaultManagementClient(credentials, settings.SubscriptionID);
+    // Creates an ARM client
+    //var client = new keyVaultManagementClient(credentials, settings.SubscriptionID);
+    // Create service client
+    var client = new KeyVault.KeyVaultClient(credentials);
 
     // Sequence async operations for our tests
     async.series([
@@ -56,10 +63,11 @@ context.acquireTokenWithClientCredentials(resource, clientId, clientSecret, func
             })
         },
 */
+
         // Get Keys
         function(callback){
             console.log("Getting list of keys from vault...");
-            var client = new KeyVault.KeyVaultClient(credentials);
+   
             client.getSecrets('https://mjysamplekeyvault.vault.azure.net', function(err, results){
                 if (err){
                     console.log(err);
@@ -73,7 +81,14 @@ context.acquireTokenWithClientCredentials(resource, clientId, clientSecret, func
         // Get Secret for a key
         function(callback){
             console.log("TODO: Getting secret value...");
-            callback();
+            client.getSecret('https://mjysamplekeyvault.vault.azure.net/secrets/testkey1/', function(err, results){
+                if (err){
+                    console.log(err);
+                } else {
+                    console.log(results);
+                    callback();
+                }
+            });
         }
     ], function(err, result){
         console.log("Done!!!");
