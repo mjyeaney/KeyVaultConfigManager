@@ -3,6 +3,8 @@
 // 
 
 (function(scope){
+    var logger = require('./services/logger.js').Logger;
+
     // Create namespace container
     if (!scope.Settings){
         scope.Settings = {};
@@ -15,18 +17,19 @@
     scope.Settings.ClientID = "--TODO--";
     scope.Settings.Key = "--TODO--";
     scope.Settings.SubscriptionID = "--TODO--";
+    scope.Settings.Tenant = "--TODO--"
 
     // ADAL token refresh interval
     scope.Settings.DefaultTokenLifetimeSec = 300;
-    console.log("Default settings initialized...");
+    logger.Log("Default settings initialized...");
 
     // Look for any local / environmental overrides
     try {
         var locals = require('./settings.local.js').Locals;
         locals.Apply(scope.Settings);
-        console.log("Local overrides applied!!!");
+        logger.Log("Local overrides applied!!!");
     } catch(e){
-        console.log("Unable to locate local overrides");
+        logger.Log("Unable to locate local overrides");
     }
     
 })(this);

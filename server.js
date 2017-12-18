@@ -9,6 +9,7 @@
 // Pull in libs and bootstrap express application
 //
 const express = require('express'),
+    logger = require('./services/logger.js').Logger,
     core = require('./services/application.js').Application,
     adalTokenCache = require('./services/adalTokenCache.js').TokenCache;
     
@@ -37,7 +38,9 @@ app.use(express.static(__dirname, {
 //
 app.get('/vaults', (req, resp) => {
     setNoCache(resp);
-    resp.json(core.ListKeyVaults());
+    core.ListKeyVaults((err, response) => {
+        resp.json(response);
+    })
 });
 
 //
@@ -46,5 +49,5 @@ app.get('/vaults', (req, resp) => {
 const server = app.listen(port, function () {
   var host = server.address().address;
   var port = server.address().port;
-  console.log('Server now listening at http://%s:%s', host, port);
+  logger.Log(`Server now listening at http://${host}:${port}`);
 });

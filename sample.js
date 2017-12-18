@@ -19,10 +19,10 @@ var clientId = settings.ClientID;
 var clientSecret = settings.Key;
 
 // Used when managing the keyvault as a RESOURCE.
-//var resource = 'https://management.core.windows.net/';
+var resource = 'https://management.core.windows.net/';
 
 // Used when working with the values INSIDE the keyvault
-var resource = 'https://vault.azure.net';
+//var resource = 'https://vault.azure.net';
 
 // Create ADAL context
 var AuthenticationContext = adal.AuthenticationContext;
@@ -31,24 +31,24 @@ var context = new AuthenticationContext(authorityUrl);
 // Use secrets to get a token
 console.log("Acquiring token...");
 context.acquireTokenWithClientCredentials(resource, clientId, clientSecret, function(err, tokenResponse) {
-  if (err) {
-    console.log('ERROR: ' + err.stack);
-  } else {
-    console.log("Token acquired...creating KeyVault client...");  
-    var credentials = new AzureCommon.TokenCloudCredentials({
-        subscriptionId : settings.SubscriptionID,
-        authorizationScheme : tokenResponse.tokenType,
-        token : tokenResponse.accessToken
-    });
+    if (err) {
+        console.log('ERROR: ' + err.stack);
+    } else {
+        console.log("Token acquired...creating KeyVault client...");  
+        var credentials = new AzureCommon.TokenCloudCredentials({
+            subscriptionId : settings.SubscriptionID,
+            authorizationScheme : tokenResponse.tokenType,
+            token : tokenResponse.accessToken
+        });
 
     // Creates an ARM client
-    //var client = new keyVaultManagementClient(credentials, settings.SubscriptionID);
+    var client = new keyVaultManagementClient(credentials, settings.SubscriptionID);
     // Create service client
-    var client = new KeyVault.KeyVaultClient(credentials);
+    //var client = new KeyVault.KeyVaultClient(credentials);
 
     // Sequence async operations for our tests
     async.series([
-/*
+
         // LIST KEYVAULTS
         function(callback){
             console.log("Getting list of KeyVaults...");
@@ -62,8 +62,8 @@ context.acquireTokenWithClientCredentials(resource, clientId, clientSecret, func
                 callback();
             })
         },
-*/
 
+/*
         // Get Keys
         function(callback){
             console.log("Getting list of keys from vault...");
@@ -90,6 +90,7 @@ context.acquireTokenWithClientCredentials(resource, clientId, clientSecret, func
                 }
             });
         }
+*/
     ], function(err, result){
         console.log("Done!!!");
     });
