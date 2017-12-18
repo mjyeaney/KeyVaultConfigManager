@@ -4,32 +4,28 @@
 //
 
 (function(scope){
+    const settings = require('../settings.js').Settings,
+        logger = require('./logger.js').Logger;
+    
     // Ensure namepsace
     if (!scope.TokenCache){
         scope.TokenCache = {};
-    }
-
-    var settings = require('../settings.js').Settings;
-
-    // local log function
-    function logMsg(msg){
-        console.log("[adalTokenCache]:: " + msg)
     }
 
     // our cache store
     var _tokenCache = {};
 
     // auto refresh of token, as per settings interval
-    function refreshToken(){
-        logMsg("Refreshing cached tokens...");
+    const refreshToken = () => {
+        logger.Log("Refreshing cached tokens...");
     };
 
     // Create background job to refresh token
-    logMsg("Starting token cache services...");
+    logger.Log("Starting token cache services...");
     setInterval(refreshToken, settings.DefaultTokenLifetimeSec * 1000)
 
     // Simply returns the active token
-    function acquireToken(resourceUri){
+    const acquireToken = (resourceUri) => {
         return _token[resourceUri];
     };
 
