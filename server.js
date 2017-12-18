@@ -43,6 +43,13 @@ app.get('/vaults', (req, resp) => {
     })
 });
 
+app.get('/vaultSettings', (req, resp) => {
+    setNoCache(resp);
+    core.ListKeyVaultSettings((err, response) => {
+        resp.json(response);
+    });
+});
+
 //
 // Init server listener loop
 //

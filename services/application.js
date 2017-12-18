@@ -73,6 +73,15 @@
         });
     };
 
+    const listKeyVaultSettings = function(onComplete){
+        onComplete(null, [{
+            id: "123-234",
+            name: "Setting1",
+            vaule: "FooBazBar"
+        }]);
+    };
+
     // Export methods
     scope.Application.ListKeyVaults = listKeyVaults;
+    scope.Application.ListKeyVaultSettings = listKeyVaultSettings;
 })(this);
