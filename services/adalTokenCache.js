@@ -1,9 +1,7 @@
-/*
-
-Handles the process of getting and caching/refreshing bearer tokens 
-using the ADAL library.
-
-*/
+//
+// Handles the process of getting and caching/refreshing bearer tokens  
+// using the ADAL library.
+//
 
 (function(scope){
     // Ensure namepsace

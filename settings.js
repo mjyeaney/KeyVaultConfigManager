@@ -1,18 +1,11 @@
-/*
-
-Replace settings in this file with your own.
-
-*/
+//
+// Global configuration settings; override per-environment settings in settings.local.js
+// 
 
 (function(scope){
     // Create namespace container
     if (!scope.Settings){
         scope.Settings = {};
-    }
-
-    // local log function
-    function logMsg(msg){
-        console.log("[settings]:: " + msg)
     }
 
     // 
@@ -25,14 +18,15 @@ Replace settings in this file with your own.
 
     // ADAL token refresh interval
     scope.Settings.DefaultTokenLifetimeSec = 300;
-    logMsg("Default settings initialized...")
+    console.log("Default settings initialized...");
+
+    // Look for any local / environmental overrides
+    try {
+        var locals = require('./settings.local.js').Locals;
+        locals.Apply(scope.Settings);
+        console.log("Local overrides applied!!!");
+    } catch(e){
+        console.log("Unable to locate local overrides");
+    }
     
 })(this);
-
-// Apply local settings (if found)
-try {
-    require('./settings.local.js');
-    console.log("Loaded local settings!!!");
-} catch (e) {
-    console.log("WARNING: Local settings not found - using defaults...");
- }

@@ -55,7 +55,7 @@ a { text-decoration: none; }
     border-right: 1px solid #a0a0a0;
 }
 #leftMenu h2 { font-weight: 400; margin-bottom: .75em; }
-#leftMenu ul { list-style-type: none; margin-bottom: 1em; }
+#leftMenu ul { list-style-type: none; margin-bottom: 2em; }
 #leftMenu ul li { margin-bottom: .5em; }
 #leftMenu ul li a { text-decoration: none; color: #4a4a4a; display: block; padding: .25em;}
 #leftMenu #footer { position: absolute; bottom: 1em; right: 0; left: 0; }

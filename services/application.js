@@ -11,7 +11,11 @@ Contains the main application logic/workflow
     }
 
     var listKeyVaults = function(){
-
+        return [{
+            Name: "sample key vault",
+            ResourceGroup: "Some RG",
+            Location: "South Central US"
+        }];
     };
 
     var createKeyVault = function(){
@@ -23,5 +27,5 @@ Contains the main application logic/workflow
     };
 
     // Export methods
-
+    scope.Application.ListKeyVaults = listKeyVaults;
 })(this);

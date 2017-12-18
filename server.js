@@ -8,20 +8,20 @@
 //
 // Pull in libs and bootstrap express application
 //
-var express = require('express'),
-    settings = require('./settings.js').Settings,
+const express = require('express'),
+    core = require('./services/application.js').Application,
     adalTokenCache = require('./services/adalTokenCache.js').TokenCache;
     
 // Init the express engine
-var app = express();
+const app = express();
 
 // Check for the PORT env var from the azure host
-var port = process.env.PORT || 8009;
+const port = process.env.PORT || 8009;
 
 //
 // Helper fn to set no-cache headers
 //
-var setNoCache = function(res){
+const setNoCache = function(res){
     res.append('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
 };
 
@@ -33,9 +33,17 @@ app.use(express.static(__dirname, {
 }));
 
 //
+// Basic API entry points here
+//
+app.get('/vaults', (req, resp) => {
+    setNoCache(resp);
+    resp.json(core.ListKeyVaults());
+});
+
+//
 // Init server listener loop
 //
-var server = app.listen(port, function () {
+const server = app.listen(port, function () {
   var host = server.address().address;
   var port = server.address().port;
   console.log('Server now listening at http://%s:%s', host, port);
