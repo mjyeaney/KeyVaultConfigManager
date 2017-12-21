@@ -32,6 +32,19 @@ $(function(){
         });
     };
 
+    const getLogStream = function(){
+        $.ajax({
+            url: "/logStream",
+            success: function(data){
+                renderLogStream(data);
+            },
+            error: function(e){
+                let msg = `${e.status} - ${e.statusText}`;
+                setupErrorState(msg);
+            }
+        });
+    };
+
     //
     // Render functions 
     //
@@ -67,6 +80,12 @@ $(function(){
         $("p.progress").hide();
     };
 
+    const renderLogStream = function(logStream){
+        $("p.progress").hide();
+        $("pre.logViewer").show();
+        $("#content pre").html(logStream);
+    };
+
     //
     // UI Event handlers
     //
@@ -75,6 +94,7 @@ $(function(){
         $("p.error").hide();
         $("p.unknown").hide();
         $("p.progress").hide();
+        $("pre.logViewer").hide();
         $("#content ul li").remove();
         
         let hash = location.hash;
@@ -92,6 +112,10 @@ $(function(){
             case "settings":
                 $("p.progress").show();
                 listSettings();
+                break;
+            case "logStream":
+                $("p.progress").show();
+                getLogStream();
                 break;
             case "":
                 $("p.getStarted").show();

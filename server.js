@@ -50,6 +50,13 @@ app.get('/vaultSettings', (req, resp) => {
     });
 });
 
+app.get('/logStream', (req, resp) => {
+    setNoCache(resp);
+    logger.GetLogStream((stream) => {
+        resp.json(stream);
+    })
+});
+
 //
 // Init server listener loop
 //
