@@ -74,6 +74,21 @@
         });
     };
 
+    // const getKeyVaultSetting = function(onComplete){
+    //     // Get Secret for a key
+    //     function(callback){
+    //         console.log("TODO: Getting secret value...");
+    //         client.getSecret('https://mjysamplekeyvault.vault.azure.net/secrets/testkey1/', function(err, results){
+    //             if (err){
+    //                 console.log(err);
+    //             } else {
+    //                 console.log(results);
+    //                 callback();
+    //             }
+    //         });
+    //     }
+    // };
+
     // Export methods
     scope.Application.ListKeyVaults = listKeyVaults;
     scope.Application.ListKeyVaultSettings = listKeyVaultSettings;
