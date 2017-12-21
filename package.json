@@ -1,5 +1,5 @@
 {
-  "name": "keyvaultconfigservice",
+  "name": "keyvaultconfigmanager",
   "version": "1.0.0",
   "description": "Basic configuration service wrapping Azure KeyVault.",
   "main": "server.js",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://mjyeaney@github.com/mjyeaney/KeyVaultConfigService.git"
+    "url": "git+https://mjyeaney@github.com/mjyeaney/KeyVaultConfigManager.git"
   },
   "author": "Michael Yeaney",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mjyeaney/KeyVaultConfigService/issues"
+    "url": "https://github.com/mjyeaney/KeyVaultConfigManager/issues"
   },
-  "homepage": "https://github.com/mjyeaney/KeyVaultConfigService#readme",
+  "homepage": "https://github.com/mjyeaney/KeyVaultConfigManager#readme",
   "dependencies": {
     "adal-node": "^0.1.22",
     "async": "^2.0.1",
