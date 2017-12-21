@@ -6,7 +6,7 @@ $(function(){
     //
     // Remote data access calls
     //
-    var listVaults = function(){
+    const listVaults = function(){
         $.ajax({
             url: "/vaults",
             success: function(data){
@@ -19,7 +19,7 @@ $(function(){
         });
     };
 
-    var listSettings = function(){
+    const listSettings = function(){
         $.ajax({
             url: "/vaultSettings",
             success: function(data){
@@ -35,7 +35,7 @@ $(function(){
     //
     // Render functions 
     //
-    var setupErrorState = function(err){
+    const setupErrorState = function(err){
         $("p.getStarted").hide();
         $("p.error").show().find('span').text(err);
         $("p.unknown").hide();
@@ -43,7 +43,7 @@ $(function(){
         $("#content ul li").remove();
     };
 
-    var renderVaults = function(list){
+    const renderVaults = function(list){
         let j = 0;
         let buffer = [];
 
@@ -55,7 +55,7 @@ $(function(){
         $("p.progress").hide();
     };
 
-    var renderSettings = function(list){
+    const renderSettings = function(list){
         let j = 0;
         let buffer = [];
 
@@ -70,7 +70,7 @@ $(function(){
     //
     // UI Event handlers
     //
-    function routeLocation(){
+    const routeLocation = function(){
         $("p.getStarted").hide();
         $("p.error").hide();
         $("p.unknown").hide();

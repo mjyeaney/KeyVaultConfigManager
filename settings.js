@@ -20,7 +20,7 @@
     scope.Settings.Tenant = "--TODO--"
 
     // ADAL token refresh interval
-    scope.Settings.DefaultTokenLifetimeSec = 300;
+    scope.Settings.DefaultTokenLifetimeSec = 120;
     logger.Log("Default settings initialized...");
 
     // Look for any local / environmental overrides

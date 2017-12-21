@@ -4,13 +4,13 @@
 
 (function(scope){
     // Module imports
-    const settings = require('../settings.js').Settings,
-        logger = require('../services/logger.js').Logger,
-        async = require('async'),
-        adal = require('adal-node'),
-        AzureCommon = require('azure-common'),
-        keyVaultManagementClient = require('azure-arm-keyvault'),
-        KeyVault = require('azure-keyvault');
+    const settings = require("../settings.js").Settings,
+        logger = require("../services/logger.js").Logger,
+        tokenCache = require("../services/adalTokenCache.js").TokenCache,
+        async = require("async"),
+        AzureCommon = require("azure-common"),
+        keyVaultManagementClient = require("azure-arm-keyvault"),
+        KeyVault = require("azure-keyvault");
 
     // Make container for applicaiton
     if (!scope.Application){
@@ -18,57 +18,20 @@
     }
 
     const listKeyVaults = function(onComplete){
-
-        // Setup ADAL parameters
-        let authorityHostUrl = 'https://login.windows.net';
-        let tenant = settings.Tenant;
-        let authorityUrl = authorityHostUrl + '/' + tenant;
-        let clientId = settings.ClientID;
-        let clientSecret = settings.Key;
-
-        // Used when managing the keyvault as a RESOURCE.
-        let resource = 'https://management.core.windows.net/';
-
-        // Create ADAL context
-        let AuthenticationContext = adal.AuthenticationContext;
-        let context = new AuthenticationContext(authorityUrl);
-
-        // Use secrets to get a token
-        logger.Log("Acquiring token...");
-        context.acquireTokenWithClientCredentials(resource, clientId, clientSecret, (err, tokenResponse) => {
-            if (err) {
-                logger.Log('ERROR: ' + err.stack);
-                onComplete(err);
-            }
-
-            logger.Log("Token acquired...creating KeyVault client...");  
-
-            let credentials = new AzureCommon.TokenCloudCredentials({
-                subscriptionId : settings.SubscriptionID,
-                authorizationScheme : tokenResponse.tokenType,
-                token : tokenResponse.accessToken
-            });
-
+        // Read/get our access credentials from the token cache
+        tokenCache.AcquireToken("https://management.core.windows.net/", (credentials) => {
             // Creates an ARM client
+            logger.Log("Getting list of KeyVaults...");
             let client = new keyVaultManagementClient(credentials, settings.SubscriptionID);
 
-            // Sequence async operations for our tests
-            async.series([
-                // LIST KEYVAULTS
-                function(next){
-                    logger.Log("Getting list of KeyVaults...");
-                    client.vaults.list((err, response) => {
-                        if (err){
-                            logger.Log("ERROR: " + err);
-                            onComplete(err);
-                        } else {
-                            onComplete(null, response);
-                        }
-                        next();
-                    })
-                },
-            ], (err, result) => {
-                logger.Log("Done!!!");
+            client.vaults.list((err, response) => {
+                if (err){
+                    logger.Log("ERROR: " + err);
+                    onComplete(err);
+                } else {
+                    logger.Log("Done!");
+                    onComplete(null, response);
+                }
             });
         });
     };
