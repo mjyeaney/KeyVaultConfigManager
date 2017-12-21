@@ -13,7 +13,7 @@ $(function(){
                 renderVaults(data);
             },
             error: function(e){
-                let msg = `${e.status} - ${e.statusText}`;
+                let msg = `${e.status}: ${e.statusText}`;
                 setupErrorState(msg);
             }
         });
@@ -26,7 +26,7 @@ $(function(){
                 renderSettings(data);
             },
             error: function(e){
-                let msg = `${e.status} - ${e.statusText}`;
+                let msg = `${e.status}: ${e.statusText}`;
                 setupErrorState(msg);
             }
         });
@@ -39,7 +39,7 @@ $(function(){
                 renderLogStream(data);
             },
             error: function(e){
-                let msg = `${e.status} - ${e.statusText}`;
+                let msg = `${e.status}: ${e.statusText}`;
                 setupErrorState(msg);
             }
         });

@@ -13,8 +13,10 @@
         keyVaultManagementClient = require("azure-arm-keyvault"),
         KeyVault = require("azure-keyvault");
 
-    const ARM_MGMT_URI = "https://management.core.windows.net/";
-    const CACHE_LIST_KEYVAULTS = "LIST_KEYVAULTS";
+    const ARM_MGMT_URI = "https://management.core.windows.net/",
+        KEYVAULT_MGMT_URI = "https://vault.azure.net",
+        CACHE_LIST_KEYVAULTS = "LIST_KEYVAULTS",
+        CACHE_LIST_KV_SECRETS = "LIST_KV_SECRETS";
 
     // Make container for applicaiton
     if (!scope.Application){
@@ -48,11 +50,28 @@
     };
 
     const listKeyVaultSettings = function(onComplete){
-        onComplete(null, [{
-            id: "123-234",
-            name: "Setting1",
-            vaule: "FooBazBar"
-        }]);
+        dataCache.Get(CACHE_LIST_KV_SECRETS, (list) => {
+            if (!list){
+                // Read/get our access credentials from the token cache
+                tokenCache.AcquireToken(KEYVAULT_MGMT_URI, (credentials) => {
+                    // Creates an AKV client
+                    logger.Log("Getting list of Secrets...");
+                    let client = new KeyVault.KeyVaultClient(credentials);
+
+                    client.getSecrets('https://mjysamplekeyvault.vault.azure.net', (err, response) =>{
+                        if (err){
+                            logger.Log("ERROR: " + err);
+                        } else {
+                            logger.Log("Done!");
+                            dataCache.Set(CACHE_LIST_KV_SECRETS, response);
+                            onComplete(null, response);
+                        }
+                    });
+                });
+            } else {
+                onComplete(null, list);
+            }
+        });
     };
 
     // Export methods
