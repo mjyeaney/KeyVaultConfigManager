@@ -10,8 +10,7 @@
 //
 const express = require('express'),
     logger = require('./services/logger.js').Logger,
-    core = require('./services/application.js').Application,
-    adalTokenCache = require('./services/adalTokenCache.js').TokenCache;
+    core = require('./services/application.js').Application;
     
 // Init the express engine
 const app = express();

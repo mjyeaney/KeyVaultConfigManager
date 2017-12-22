@@ -16,7 +16,7 @@
     };
 
     const writeLogMessage = (msg) => {
-        let d = new Date().toISOString();
+        let d = moment().toISOString(true);
         let formattedMsg = `${d}: [INFO]: ${msg}`;
         _logBuffer.push(formattedMsg);
         console.log(formattedMsg);
