@@ -17,6 +17,7 @@
         KEYVAULT_MGMT_URI = "https://vault.azure.net",
         CACHE_LIST_KEYVAULTS = "LIST_KEYVAULTS",
         CACHE_LIST_KV_SECRETS = "LIST_KV_SECRETS";
+        CACHE_GET_KV_SECRET = "GET_KV_SECRET";
 
     // Make container for applicaiton
     if (!scope.Application){
@@ -49,8 +50,9 @@
         });
     };
 
-    const listKeyVaultSettings = function(onComplete){
-        dataCache.Get(CACHE_LIST_KV_SECRETS, (list) => {
+    const getKeyVaultSettings = function(vaultName, onComplete){
+        let cacheKey = `${CACHE_LIST_KV_SECRETS}_${vaultName}`;
+        dataCache.Get(cacheKey, (list) => {
             if (!list){
                 // Read/get our access credentials from the token cache
                 tokenCache.AcquireToken(KEYVAULT_MGMT_URI, (credentials) => {
@@ -58,12 +60,18 @@
                     logger.Log("Getting list of Secrets...");
                     let client = new KeyVault.KeyVaultClient(credentials);
 
-                    client.getSecrets('https://mjysamplekeyvault.vault.azure.net', (err, response) =>{
+                    client.getSecrets(`https://${vaultName}.vault.azure.net`, (err, response) =>{
                         if (err){
                             logger.Log("ERROR: " + err);
+                            onComplete(err);
                         } else {
                             logger.Log("Done!");
-                            dataCache.Set(CACHE_LIST_KV_SECRETS, response);
+                            response.sort((x, y) => {
+                                if (x < y) return -1;
+                                if (x > y) return 1;
+                                if (x === y) return 0;
+                            });
+                            dataCache.Set(cacheKey, response);
                             onComplete(null, response);
                         }
                     });
@@ -74,22 +82,34 @@
         });
     };
 
-    // const getKeyVaultSetting = function(onComplete){
-    //     // Get Secret for a key
-    //     function(callback){
-    //         console.log("TODO: Getting secret value...");
-    //         client.getSecret('https://mjysamplekeyvault.vault.azure.net/secrets/testkey1/', function(err, results){
-    //             if (err){
-    //                 console.log(err);
-    //             } else {
-    //                 console.log(results);
-    //                 callback();
-    //             }
-    //         });
-    //     }
-    // };
+    const getKeyVaultSetting = function(vaultName, settingName, onComplete){
+        let cacheKey = `${CACHE_GET_KV_SECRET}_${vaultName}_${settingName}`;
+        dataCache.Get(cacheKey, (list) => {
+            if (!list){        
+                // Read/get our access credentials from the token cache
+                tokenCache.AcquireToken(KEYVAULT_MGMT_URI, (credentials) => {
+                    // Creates an AKV client
+                    logger.Log("Getting secret value...");
+                    let client = new KeyVault.KeyVaultClient(credentials);
+                    client.getSecret(`https://${vaultName}.vault.azure.net/secrets/${settingName}/`, function(err, results){
+                        if (err){
+                            logger.Log(err);
+                            onComplete(err);
+                        } else {
+                            logger.Log("Done!");
+                            dataCache.Set(cacheKey, results);
+                            onComplete(null, results);
+                        }
+                    });
+                });
+            } else {
+                onComplete(null, list);
+            }
+        });
+    };
 
     // Export methods
     scope.Application.ListKeyVaults = listKeyVaults;
-    scope.Application.ListKeyVaultSettings = listKeyVaultSettings;
+    scope.Application.GetKeyVaultSettings = getKeyVaultSettings;
+    scope.Application.GetKeyVaultSetting = getKeyVaultSetting;
 })(this);

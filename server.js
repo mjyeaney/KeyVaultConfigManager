@@ -42,19 +42,19 @@ app.get('/vaults', (req, resp) => {
     })
 });
 
-app.get('/vaultSettings', (req, resp) => {
+app.get('/vaultSettings/:vaultName', (req, resp) => {
     setNoCache(resp);
-    core.ListKeyVaultSettings((err, response) => {
+    core.GetKeyVaultSettings(req.params.vaultName, (err, response) => {
         resp.json(response);
     });
 });
 
-// app.get('/vaultSetting', (req, resp) => {
-//     setNoCache(resp);
-//     core.ListKeyVaultSetting((err, response) => {
-//         resp.json(response);
-//     });
-// });
+app.get('/vaultSetting/:vaultName/:settingName', (req, resp) => {
+    setNoCache(resp);
+    core.GetKeyVaultSetting(req.params.vaultName, req.params.settingName, (err, response) => {
+        resp.json(response);
+    });
+});
 
 app.get('/logStream', (req, resp) => {
     setNoCache(resp);

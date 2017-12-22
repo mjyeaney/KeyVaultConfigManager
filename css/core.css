@@ -16,24 +16,25 @@ a { text-decoration: none; }
 /* Header */
 #header { 
     background-color: #315; 
-    padding: 1em; 
+    padding: 0; 
     position: relative;
     border-bottom: 1px solid #000;
+    height: 5em;
 }
 #header h1 { 
     color: #fff;
-    line-height: 2.5em;
-    font-size: 2em;
+    line-height: 3em;
+    font-size: 1.75em;
     background-image: url(/images/lock-icon.png);
     background-repeat: no-repeat;
     background-position: left center;
-    padding-left: 3em;
+    padding-left: 2.5em;
 }
 #header ul { list-style-type: none; position: absolute; right: 0; top: 0; font-size: 1.2em; }
 #header ul li { 
     text-align: right;
     position: relative;
-    line-height: 6em;
+    line-height: 4.5em;
     margin-right: 1em;
     background-image: url(/images/GitHub-Mark-Light-32px.png);
     background-repeat: no-repeat;
@@ -47,7 +48,7 @@ a { text-decoration: none; }
     position: absolute;
     left: 0;
     bottom: 0;
-    top: 7em;
+    top: 5em;
     width: 20em;
     padding: 1em; 
     background-color: #eee; 
@@ -66,7 +67,7 @@ a { text-decoration: none; }
     position: absolute; 
     left: 22em; 
     bottom: 0; 
-    top: 7em; 
+    top: 5em; 
     right: 0; 
     overflow-y: scroll;
     border-top: 1px solid #000; 
@@ -82,24 +83,78 @@ a { text-decoration: none; }
 }
 #content ul li {
     float: left;
-    width: 20em;
-    height: 20em;
+    width: 15em;
+    height: 15em;
     border: 1px solid #a0a0a0;
-    box-shadow: 0 0 5px #ccc;
+    box-shadow: 0 3px 2px #ccc;
     padding: 1em;
     overflow:hidden;
     margin-right: 1em;
     margin-bottom: 1em;
+    text-align: center;
+    cursor: pointer;
 }
 #content ul li.vault {
     background-image: url('/images/key-vault.svg');
-    background-position: center 12em;
+    background-position: center 10em;
     background-repeat: no-repeat;
-    background-size: 100px;
-    text-align: center;
-    cursor: pointer;
+    background-size: 60px;
 }
 #content ul li b {
     display: block;
     font-size: 1.5em;
+}
+
+.propertySheet {
+    position: absolute;
+    display: none;
+    top: 10em;
+    width: 54em;
+    height: 35em;
+    border: 1px solid #a0a0a0;
+    background-color: #fff;
+    box-shadow: 0 0 5px #888;
+    left: 50%;
+    margin-left: -28em;
+    padding: 1em;
+}
+
+.propertySheet h2 { 
+    margin-bottom: 1em;
+    font-size: 1.75em;
+    font-weight: bold;
+}
+
+.propertySheet label {
+    display: block;
+    font-weight: bold;
+}
+
+.propertySheet label.marginTop{
+    margin-top: 1em;
+}
+
+.propertySheet input, .propertySheet textarea {
+    border: 1px solid #c0c0c0;
+    padding: 2px;
+    width: 53.5em;
+}
+
+.propertySheet textarea {
+    height: 20em;
+}
+
+.propertySheetButtons {
+    position: absolute;
+    bottom: 2em;
+    right: 1em;
+}
+
+.propertySheetButtons a {
+    font-size: 1.25em;
+    cursor: pointer;
+    font-weight: bold;
+    display: inline-block;
+    margin-left: 1em;
+    color: #03f;
 }

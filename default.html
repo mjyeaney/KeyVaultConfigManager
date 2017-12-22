@@ -50,7 +50,20 @@
         <pre class="logViewer"></pre>
     </div>
 
+    <div class="propertySheet" id="secretEditor">
+        <h2>Secret Details</h2>
+        <label for="txtSecretName">Name:</label>
+        <input type="text" id="txtSecretName" value="" />
+        <label class="marginTop" for="txtSecretValue">Value:</label>
+        <textarea id="txtSecretValue"></textarea>
+        <div class="propertySheetButtons">
+            <a class="update" title="Update">Update</a>
+            <a class="close" title="Close">Close</a>
+        </div>
+    </div>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="/client/stateManager.js"></script>
     <script src="/client/main.js"></script>
 </body>
 </html>
