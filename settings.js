@@ -19,8 +19,9 @@
     scope.Settings.SubscriptionID = "--TODO--";
     scope.Settings.Tenant = "--TODO--"
 
-    // ADAL token refresh interval
+    // ADAL/Data cache refresh interval
     scope.Settings.DefaultTokenLifetimeSec = 120;
+    scope.Settings.DefaultCacheLifetimeSec = 90;
     logger.Log("Default settings initialized...");
 
     // Look for any local / environmental overrides

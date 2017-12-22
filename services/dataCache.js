@@ -4,7 +4,8 @@
 //
 
 (function(scope){
-    const logger = require("../services/logger.js").Logger;
+    const settings = require('../settings.js').Settings,
+        logger = require("../services/logger.js").Logger;
 
     // Define module namespace
     if (!scope.DataCache){
@@ -25,8 +26,8 @@
     };
 
     // Create background job to purge cache
-    logger.Log(`Starting data cache services...default lifetime = 90`);
-    setInterval(refreshCache, 90 * 1000)
+    logger.Log(`Starting data cache services...default lifetime = ${settings.DefaultCacheLifetimeSec}`);
+    setInterval(refreshCache, settings.DefaultCacheLifetimeSec * 1000)
 
     // Makes a call into the cache to check for an item
     let getCachedItem = (key, callback) => {
