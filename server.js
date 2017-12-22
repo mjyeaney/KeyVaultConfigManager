@@ -49,6 +49,13 @@ app.get('/vaultSettings', (req, resp) => {
     });
 });
 
+// app.get('/vaultSetting', (req, resp) => {
+//     setNoCache(resp);
+//     core.ListKeyVaultSetting((err, response) => {
+//         resp.json(response);
+//     });
+// });
+
 app.get('/logStream', (req, resp) => {
     setNoCache(resp);
     logger.GetLogStream((stream) => {

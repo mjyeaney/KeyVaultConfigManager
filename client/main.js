@@ -6,41 +6,41 @@ $(function(){
     //
     // Remote data access calls
     //
-    const listVaults = function(){
+    const getVaultData = function(onComplete, onError){
         $.ajax({
             url: "/vaults",
             success: function(data){
-                renderVaults(data);
+                onComplete(data);
             },
             error: function(e){
                 let msg = `${e.status}: ${e.statusText}`;
-                setupErrorState(msg);
+                onError(msg);
             }
         });
     };
 
-    const listSettings = function(){
+    const getSettingsData = function(onComplete, onError){
         $.ajax({
             url: "/vaultSettings",
             success: function(data){
-                renderSettings(data);
+                onComplete(data);
             },
             error: function(e){
                 let msg = `${e.status}: ${e.statusText}`;
-                setupErrorState(msg);
+                onError(msg);
             }
         });
     };
 
-    const getLogStream = function(){
+    const getLogStream = function(onComplete, onError){
         $.ajax({
             url: "/logStream",
             success: function(data){
-                renderLogStream(data);
+                onComplete(data);
             },
             error: function(e){
                 let msg = `${e.status}: ${e.statusText}`;
-                setupErrorState(msg);
+                onError(msg);
             }
         });
     };
@@ -61,7 +61,10 @@ $(function(){
         let buffer = [];
 
         for (j = 0; j < list.length; j++){
-            buffer.push(`<li class="vault" data-id="${list[j].id}"><b>${list[j].name}</b><span>${list[j].location}</span></li>`)
+            let id = list[j].id;
+            let name = list[j].name;
+            let location = list[j].location;
+            buffer.push(`<li class="vault" data-id="${id}"><b>${name}</b><span>${location}</span></li>`)
         }
 
         $("#content ul").append(buffer.join(""));
@@ -73,7 +76,9 @@ $(function(){
         let buffer = [];
 
         for (j = 0; j < list.length; j++){
-            buffer.push(`<li class="setting" data-id="${list[j].id}"><b>${list[j].name}</b><span>${list[j].vaule}</span></li>`)
+            let id = list[j].id;
+            let name = id.split('/').slice(-1)[0];
+            buffer.push(`<li class="setting" data-id="${id}"><b>${name}</b><span></span></li>`)
         }
 
         $("#content ul").append(buffer.join(""));
@@ -107,15 +112,15 @@ $(function(){
         switch (cmd){
             case "listVaults":
                 $("p.progress").show();
-                listVaults();
+                getVaultData(renderVaults, setupErrorState);
                 break;
             case "settings":
                 $("p.progress").show();
-                listSettings();
+                getSettingsData(renderSettings, setupErrorState);
                 break;
             case "logStream":
                 $("p.progress").show();
-                getLogStream();
+                getLogStream(renderLogStream, setupErrorState);
                 break;
             case "":
                 $("p.getStarted").show();

@@ -87,6 +87,9 @@ a { text-decoration: none; }
     border: 1px solid #a0a0a0;
     box-shadow: 0 0 5px #ccc;
     padding: 1em;
+    overflow:hidden;
+    margin-right: 1em;
+    margin-bottom: 1em;
 }
 #content ul li.vault {
     background-image: url('/images/key-vault.svg');
@@ -96,7 +99,7 @@ a { text-decoration: none; }
     text-align: center;
     cursor: pointer;
 }
-#content ul li.vault b {
+#content ul li b {
     display: block;
     font-size: 1.5em;
 }
