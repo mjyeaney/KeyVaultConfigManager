@@ -115,6 +115,10 @@ $(function(){
         $("#content pre").html(logStream);
     };
 
+    const setTitle = function(area){
+        document.title = `${area} - KeyVault Config Manager`;
+    };
+
     //
     // UI Event handlers
     //
@@ -139,21 +143,25 @@ $(function(){
         switch (cmd){
             case "listVaults":
                 $("p.progress").show();
+                setTitle("Vaults");
                 getVaults(renderVaults, setupErrorState);
                 break;
             case "settings":
                 $("p.progress").show();
+                setTitle("Settings")
                 StateManager.CurrentVault = param;
                 StateManager.CurrentSetting = "";
                 getSettings(renderSettings, setupErrorState);
                 break;
             case "setting":
                 $("p.progress").show();
+                setTitle("Edit Setting")
                 StateManager.CurrentSetting = param;
                 getSettingValue(renderSetting, setupErrorState);
                 break;
             case "logStream":
                 $("p.progress").show();
+                setTitle("LogStream")
                 getLogStream(renderLogStream, setupErrorState);
                 break;
             case "":

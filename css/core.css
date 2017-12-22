@@ -93,12 +93,15 @@ a { text-decoration: none; }
     margin-bottom: 1em;
     text-align: center;
     cursor: pointer;
-}
-#content ul li.vault {
-    background-image: url('/images/key-vault.svg');
     background-position: center 10em;
     background-repeat: no-repeat;
     background-size: 60px;
+}
+#content ul li.vault {
+    background-image: url('/images/key-vault.svg');
+}
+#content ul li.setting {
+    background-image: url('/images/checklist.svg');
 }
 #content ul li b {
     display: block;
@@ -146,7 +149,7 @@ a { text-decoration: none; }
 
 .propertySheetButtons {
     position: absolute;
-    bottom: 2em;
+    bottom: 1.5em;
     right: 1em;
 }
 
@@ -156,5 +159,8 @@ a { text-decoration: none; }
     font-weight: bold;
     display: inline-block;
     margin-left: 1em;
-    color: #03f;
+    color: #fff;
+    background-color: #36a;
+    padding: .5em;
+    border-radius: 5px;
 }
