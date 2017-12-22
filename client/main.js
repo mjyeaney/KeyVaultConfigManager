@@ -176,7 +176,7 @@ $(function(){
     });
 
     $(document).on("click", "#secretEditor a.close", function(e){
-        $("#secretEditor").hide();     
+        history.go(-1);
     });
     
     $(window).bind("hashchange", function(e) { 
