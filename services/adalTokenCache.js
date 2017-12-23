@@ -61,6 +61,15 @@
 
     // Simply returns the active token
     const acquireToken = (resourceUri, callback) => {
+        // check feature flag 
+        if (settings.DisableAdalCache){
+            _internalAcquireToken(resourceUri, (credentials) => {
+                logger.Log("Token acquired (ADAL Cache disabled) - resuming execution");
+                callback(credentials);
+            })
+            return;
+        }
+
         // check cache first
         if (!_tokenCache[resourceUri]){
             logger.Log("Token cache MISS...acquiring token...");

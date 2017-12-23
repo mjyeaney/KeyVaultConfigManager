@@ -35,25 +35,41 @@
 
     // Makes a call into the cache to check for an item
     const getCachedItem = (key, callback) => {
+        let computeRatio = (hits, total) => {
+            return (hits/total).toFixed(2);
+        };
+
         if (callback != null){
-            logger.Log(`Reading data cache; key=${key}`);
-            var item = _cache[key];
-            _total++;
-            if (!item){
-                logger.Log(`Done - data cache miss (ratio = ${(_hits/_total).toFixed(2)})`);
+            // Check feature flag
+            if (settings.DisableDataCache){
+                logger.Log("Cache dislabled");
+                callback();
             } else {
-                _hits++;
-                logger.Log(`Done - data cache hit (ratio = ${(_hits/_total).toFixed(2)})`);
+                logger.Log(`Reading data cache; key=${key}`);
+                let item = _cache[key];
+                _total++;
+                if (!item){
+                    logger.Log(`Done - data cache miss (ratio = ${computeRatio(_hits, _total)})`);
+                } else {
+                    _hits++;
+                    logger.Log(`Done - data cache hit (ratio = ${computeRatio(_hits, _total)})`);
+                }
+                callback(item);
             }
-            callback(item);
         }
     };
 
     // Sets/updates an item in the cache
     const setCachedItem = (key, data, callback) => {
-        logger.Log("Updating data cache...");
-        _cache[key] = data;
-        logger.Log("Done!");
+        // Check feature flag
+        if (settings.DisableDataCache){
+            logger.Log("Cache dislabled");
+        } else {
+            logger.Log("Updating data cache...");
+            _cache[key] = data;
+            logger.Log("Done!");
+        }
+
         if (callback != null){
             callback();
         }
@@ -61,7 +77,7 @@
 
     const getCacheStats = (callback) => {
         if (callback != null){
-            callback("test");
+            callback("TODO");
         }
     };
 
