@@ -7,7 +7,7 @@
         scope.ViewModel = {};
     }
 
-    const setupErrorState = function(err){
+    const setErrorState = function(err){
         $("p.getStarted").hide();
         $("p.error").show().find('span').text(err);
         $("p.unknown").hide();
@@ -61,15 +61,38 @@
         $("#content pre").html(logStream);
     };
 
+    const renderCacheStats = function(cacheStats){
+        $("p.progress").hide();
+        $("pre.logViewer").show();
+        $("#content ul li").remove();
+        $("#content pre").html(cacheStats);
+    };
+
     const setTitle = function(area){
         document.title = `${area} - KeyVault Config Manager`;
     };
 
+    const setBusyState = function(){
+        $("p.progress").show();
+    };
+
+    const resetView = function(){
+        $("p.getStarted").hide();
+        $("p.error").hide();
+        $("p.unknown").hide();
+        $("p.progress").hide();
+        $("pre.logViewer").hide();
+        $("#secretEditor").hide();
+    };
+
     // export methods
-    scope.ViewModel.SetupErrorState = setupErrorState;
+    scope.ViewModel.SetErrorState = setErrorState;
     scope.ViewModel.RenderVaults = renderVaults;
     scope.ViewModel.RenderSettings = renderSettings
     scope.ViewModel.RenderSetting = renderSetting;
     scope.ViewModel.RenderLogStream = renderLogStream;
+    scope.ViewModel.RenderCacheStats = renderCacheStats;
     scope.ViewModel.SetTitle = setTitle;
+    scope.ViewModel.SetBusyState = setBusyState;
+    scope.ViewModel.ResetView = resetView;
 })(this);

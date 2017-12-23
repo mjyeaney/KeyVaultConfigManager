@@ -62,9 +62,23 @@
         });
     };
 
+    const getCacheStats = function(onComplete, onError){
+        $.ajax({
+            url: "/cacheStats",
+            success: function(data){
+                onComplete(data);
+            },
+            error: function(e){
+                let msg = `${e.status}: ${e.statusText}`;
+                onError(msg);
+            }
+        });
+    };
+
     // Export methods to module
     scope.ServiceClient.GetVaults = getVaults;
     scope.ServiceClient.GetSettings = getSettings;
     scope.ServiceClient.GetSettingValue = getSettingValue;
     scope.ServiceClient.GetLogStream = getLogStream;
+    scope.ServiceClient.GetCacheStats = getCacheStats;
 })(this);

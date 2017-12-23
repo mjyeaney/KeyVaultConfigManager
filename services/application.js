@@ -51,7 +51,7 @@
     };
 
     const getKeyVaultSettings = function(vaultName, onComplete){
-        let cacheKey = `${CACHE_LIST_KV_SECRETS}_${vaultName}`;
+        let cacheKey = `${CACHE_LIST_KV_SECRETS}:${vaultName}`;
         dataCache.Get(cacheKey, (list) => {
             if (!list){
                 // Read/get our access credentials from the token cache
@@ -59,8 +59,9 @@
                     // Creates an AKV client
                     logger.Log("Getting list of Secrets...");
                     let client = new KeyVault.KeyVaultClient(credentials);
+                    let vaultUri = `https://${vaultName}.vault.azure.net`;
 
-                    client.getSecrets(`https://${vaultName}.vault.azure.net`, (err, response) =>{
+                    client.getSecrets(vaultUri, (err, response) =>{
                         if (err){
                             logger.Log("ERROR: " + err);
                             onComplete(err);
@@ -68,8 +69,8 @@
                             logger.Log("Done!");
                             response.sort((x, y) => {
                                 if (x < y) return -1;
-                                if (x > y) return 1;
-                                if (x === y) return 0;
+                                else if (x > y) return 1;
+                                else return 0;
                             });
                             dataCache.Set(cacheKey, response);
                             onComplete(null, response);
@@ -83,7 +84,7 @@
     };
 
     const getKeyVaultSetting = function(vaultName, settingName, onComplete){
-        let cacheKey = `${CACHE_GET_KV_SECRET}_${vaultName}_${settingName}`;
+        let cacheKey = `${CACHE_GET_KV_SECRET}:${vaultName}:${settingName}`;
         dataCache.Get(cacheKey, (list) => {
             if (!list){        
                 // Read/get our access credentials from the token cache
@@ -91,7 +92,9 @@
                     // Creates an AKV client
                     logger.Log("Getting secret value...");
                     let client = new KeyVault.KeyVaultClient(credentials);
-                    client.getSecret(`https://${vaultName}.vault.azure.net/secrets/${settingName}/`, function(err, results){
+                    let secretUri = `https://${vaultName}.vault.azure.net/secrets/${settingName}/`;
+
+                    client.getSecret(secretUri, (err, results) => {
                         if (err){
                             logger.Log(err);
                             onComplete(err);

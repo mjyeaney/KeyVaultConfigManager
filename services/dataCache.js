@@ -1,6 +1,10 @@
 //
-// Impelments a data caching layer. This can be swapped out for 
-// Redis once stable (make sure all calls are ASYNC)
+// Impelments a data caching layer. This will need swapped out for 
+// Redis once stable (make sure all calls are ASYNC) so we can operate 
+// across mutliple nodes.
+//
+// Other options are to keep the local caches, but use redis as a messaging
+// backplane to keep them in sync w/version stamps.
 //
 
 (function(scope){
@@ -30,7 +34,7 @@
     setInterval(refreshCache, settings.DefaultCacheLifetimeSec * 1000)
 
     // Makes a call into the cache to check for an item
-    let getCachedItem = (key, callback) => {
+    const getCachedItem = (key, callback) => {
         if (callback != null){
             logger.Log(`Reading data cache; key=${key}`);
             var item = _cache[key];
@@ -46,7 +50,7 @@
     };
 
     // Sets/updates an item in the cache
-    let setCachedItem = (key, data, callback) => {
+    const setCachedItem = (key, data, callback) => {
         logger.Log("Updating data cache...");
         _cache[key] = data;
         logger.Log("Done!");
@@ -55,7 +59,14 @@
         }
     };
 
+    const getCacheStats = (callback) => {
+        if (callback != null){
+            callback("test");
+        }
+    };
+
     // Method exports
     scope.DataCache.Get = getCachedItem;
     scope.DataCache.Set = setCachedItem;
+    scope.DataCache.GetCacheStats = getCacheStats;
 })(this);

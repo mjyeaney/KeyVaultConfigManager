@@ -7,13 +7,10 @@ $(function(){
     // UI Event handlers
     //
     const routeLocation = function(){
-        $("p.getStarted").hide();
-        $("p.error").hide();
-        $("p.unknown").hide();
-        $("p.progress").hide();
-        $("pre.logViewer").hide();
-        $("#secretEditor").hide();
         
+        ViewModel.ResetView();
+        
+        // TODO: state manager should handle this
         let hash = location.hash;
         let cmd = "";
         let param = "";
@@ -26,27 +23,32 @@ $(function(){
 
         switch (cmd){
             case "listVaults":
-                $("p.progress").show();
+                ViewModel.SetBusyState();
                 ViewModel.SetTitle("Vaults");
-                ServiceClient.GetVaults(ViewModel.RenderVaults, ViewModel.SetupErrorState);
+                ServiceClient.GetVaults(ViewModel.RenderVaults, ViewModel.SetErrorState);
                 break;
             case "settings":
-                $("p.progress").show();
+                ViewModel.SetBusyState();
                 ViewModel.SetTitle("Settings")
                 StateManager.CurrentVault = param;
                 StateManager.CurrentSetting = "";
-                ServiceClient.GetSettings(ViewModel.RenderSettings, ViewModel.SetupErrorState);
+                ServiceClient.GetSettings(ViewModel.RenderSettings, ViewModel.SetErrorState);
                 break;
             case "setting":
-                $("p.progress").show();
-                ViewModel.SetTitle("Edit Setting")
+                ViewModel.SetBusyState();
+                ViewModel.SetTitle("Edit Setting");
                 StateManager.CurrentSetting = param;
-                ServiceClient.GetSettingValue(ViewModel.RenderSetting, ViewModel.SetupErrorState);
+                ServiceClient.GetSettingValue(ViewModel.RenderSetting, ViewModel.SetErrorState);
                 break;
             case "logStream":
-                $("p.progress").show();
-                ViewModel.SetTitle("LogStream")
-                ServiceClient.GetLogStream(ViewModel.RenderLogStream, ViewModel.SetupErrorState);
+                ViewModel.SetBusyState();
+                ViewModel.SetTitle("LogStream");
+                ServiceClient.GetLogStream(ViewModel.RenderLogStream, ViewModel.SetErrorState);
+                break;
+            case "cacheStats":
+                ViewModel.SetBusyState();
+                ViewModel.SetTitle("Cache Stats");
+                ServiceClient.GetCacheStats(ViewModel.RenderCacheStats, ViewModel.SetErrorState);
                 break;
             case "":
                 $("p.getStarted").show();
