@@ -8,7 +8,6 @@
         logger = require("../services/logger.js").Logger,
         tokenCache = require("../services/adalTokenCache.js").TokenCache,
         dataCache = require("../services/dataCache.js").DataCache,
-        async = require("async"),
         AzureCommon = require("azure-common"),
         keyVaultManagementClient = require("azure-arm-keyvault"),
         KeyVault = require("azure-keyvault");
