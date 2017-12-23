@@ -4,122 +4,6 @@
 
 $(function(){
     //
-    // Remote data access calls
-    //
-    const getVaults = function(onComplete, onError){
-        $.ajax({
-            url: "/vaults",
-            success: function(data){
-                onComplete(data);
-            },
-            error: function(e){
-                let msg = `${e.status}: ${e.statusText}`;
-                onError(msg);
-            }
-        });
-    };
-
-    const getSettings = function(onComplete, onError){
-        $.ajax({
-            url: `/vaultSettings/${StateManager.CurrentVault}`,
-            success: function(data){
-                onComplete(data);
-            },
-            error: function(e){
-                let msg = `${e.status}: ${e.statusText}`;
-                onError(msg);
-            }
-        });
-    };
-
-    const getSettingValue = function(onComplete, onError){
-        $.ajax({
-            url: `/vaultSetting/${StateManager.CurrentVault}/${StateManager.CurrentSetting}`,
-            success: function(data){
-                onComplete(data);
-            },
-            error: function(e){
-                let msg = `${e.status}: ${e.statusText}`;
-                onError(msg);
-            }
-        });
-    };
-
-    const getLogStream = function(onComplete, onError){
-        $.ajax({
-            url: "/logStream",
-            success: function(data){
-                onComplete(data);
-            },
-            error: function(e){
-                let msg = `${e.status}: ${e.statusText}`;
-                onError(msg);
-            }
-        });
-    };
-
-    //
-    // Render functions 
-    //
-    const setupErrorState = function(err){
-        $("p.getStarted").hide();
-        $("p.error").show().find('span').text(err);
-        $("p.unknown").hide();
-        $("p.progress").hide();
-        $("#content ul li").remove();
-    };
-
-    const renderVaults = function(list){
-        let j = 0;
-        let buffer = [];
-
-        for (j = 0; j < list.length; j++){
-            let id = list[j].id.split('/').slice(-1)[0];
-            let name = list[j].name;
-            let location = list[j].location;
-            buffer.push(`<li class="vault" data-id="${id}"><b>${name}</b><span>Location: ${location}</span></li>`)
-        }
-
-        $("#content ul li").remove();
-        $("#content ul").append(buffer.join(""));
-        $("p.progress").hide();
-    };
-
-    const renderSettings = function(list){
-        let j = 0;
-        let buffer = [];
-
-        for (j = 0; j < list.length; j++){
-            let id = list[j].id.split('/').slice(-1)[0];
-            let name = id; 
-            let details = new Date(list[j].attributes.updated).toDateString();
-            buffer.push(`<li class="setting" data-id="${id}"><b>${name}</b><span>Last Updated: ${details}</span></li>`)
-        }
-
-        $("#content ul li").remove();
-        $("#content ul").append(buffer.join(""));
-        $("p.progress").hide();
-    };
-
-    const renderSetting = function(data){
-        $("#secretEditor #txtSecretName").val(data.id);
-        $("#secretEditor #txtSecretValue").val(data.value);
-        $("#secretEditor").show();
-        $("p.progress").hide();
-    };
-
-    const renderLogStream = function(logStream){
-        $("p.progress").hide();
-        $("pre.logViewer").show();
-        $("#content ul li").remove();
-        $("#content pre").html(logStream);
-    };
-
-    const setTitle = function(area){
-        document.title = `${area} - KeyVault Config Manager`;
-    };
-
-    //
     // UI Event handlers
     //
     const routeLocation = function(){
@@ -143,26 +27,26 @@ $(function(){
         switch (cmd){
             case "listVaults":
                 $("p.progress").show();
-                setTitle("Vaults");
-                getVaults(renderVaults, setupErrorState);
+                ViewModel.SetTitle("Vaults");
+                ServiceClient.GetVaults(ViewModel.RenderVaults, ViewModel.SetupErrorState);
                 break;
             case "settings":
                 $("p.progress").show();
-                setTitle("Settings")
+                ViewModel.SetTitle("Settings")
                 StateManager.CurrentVault = param;
                 StateManager.CurrentSetting = "";
-                getSettings(renderSettings, setupErrorState);
+                ServiceClient.GetSettings(ViewModel.RenderSettings, ViewModel.SetupErrorState);
                 break;
             case "setting":
                 $("p.progress").show();
-                setTitle("Edit Setting")
+                ViewModel.SetTitle("Edit Setting")
                 StateManager.CurrentSetting = param;
-                getSettingValue(renderSetting, setupErrorState);
+                ServiceClient.GetSettingValue(ViewModel.RenderSetting, ViewModel.SetupErrorState);
                 break;
             case "logStream":
                 $("p.progress").show();
-                setTitle("LogStream")
-                getLogStream(renderLogStream, setupErrorState);
+                ViewModel.SetTitle("LogStream")
+                ServiceClient.GetLogStream(ViewModel.RenderLogStream, ViewModel.SetupErrorState);
                 break;
             case "":
                 $("p.getStarted").show();
