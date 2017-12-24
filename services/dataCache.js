@@ -42,14 +42,14 @@
         if (callback != null){
             // Check feature flag
             if (settings.DisableDataCache){
-                logger.Log("Cache dislabled");
+                logger.LogWarning("Cache dislabled");
                 callback();
             } else {
                 logger.Log(`Reading data cache; key=${key}`);
                 let item = _cache[key];
                 _total++;
                 if (!item){
-                    logger.Log(`Done - data cache miss (ratio = ${computeRatio(_hits, _total)})`);
+                    logger.LogWarning(`Done - data cache miss (ratio = ${computeRatio(_hits, _total)})`);
                 } else {
                     _hits++;
                     logger.Log(`Done - data cache hit (ratio = ${computeRatio(_hits, _total)})`);
@@ -63,7 +63,7 @@
     const setCachedItem = (key, data, callback) => {
         // Check feature flag
         if (settings.DisableDataCache){
-            logger.Log("Cache dislabled");
+            logger.LogWarning("Cache dislabled");
         } else {
             logger.Log("Updating data cache...");
             _cache[key] = data;

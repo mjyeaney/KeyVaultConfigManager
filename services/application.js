@@ -34,7 +34,7 @@
 
                     client.vaults.list((err, response) => {
                         if (err){
-                            logger.Log("ERROR: " + err);
+                            logger.LogError(err);
                             onComplete(err);
                         } else {
                             logger.Log("Done!");
@@ -62,7 +62,7 @@
 
                     client.getSecrets(vaultUri, (err, response) =>{
                         if (err){
-                            logger.Log("ERROR: " + err);
+                            logger.LogError(err);
                             onComplete(err);
                         } else {
                             logger.Log("Done!");
@@ -95,7 +95,7 @@
 
                     client.getSecret(secretUri, (err, results) => {
                         if (err){
-                            logger.Log(err);
+                            logger.LogError(err);
                             onComplete(err);
                         } else {
                             logger.Log("Done!");

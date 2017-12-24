@@ -43,7 +43,7 @@
         logger.Log("Acquiring token...");
         context.acquireTokenWithClientCredentials(resourceUri, clientId, clientSecret, (err, tokenResponse) => {
             if (err) {
-                logger.Log('ERROR: ' + err.stack);
+                logger.LogError('ERROR: ' + err.stack);
                 onComplete(err);
             }
 
@@ -72,7 +72,7 @@
 
         // check cache first
         if (!_tokenCache[resourceUri]){
-            logger.Log("Token cache MISS...acquiring token...");
+            logger.LogWarning("Token cache MISS...acquiring token...");
             _internalAcquireToken(resourceUri, (credentials) => {
                 logger.Log("Token acquired - resuming execution");
                 _tokenCache[resourceUri] = credentials;
