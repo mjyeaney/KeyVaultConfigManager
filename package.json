@@ -22,6 +22,7 @@
     "azure-arm-keyvault": "^0.11.1",
     "azure-common": "^0.9.18",
     "azure-keyvault": "^0.10.1",
+    "body-parser": "^1.18.2",
     "express": "^4.14.0",
     "moment": "^2.20.1"
   },

@@ -3,34 +3,49 @@
 //
 
 (function(scope){
-    var moment = require('moment');
-
     if (!scope.Logger){
         scope.Logger = {};
     }
 
+    let moment = require('moment');
     let _logBuffer = [];
+
+    const FLUSH_INTERVAL_MS = 15000;
+
+    // background writer thread
+    setInterval(() => {
+        let currentBuffer = _logBuffer,
+            j = 0;
+
+        _logBuffer = [];
+
+        for (j = 0; j < currentBuffer.length; j++){
+            console.log(currentBuffer[j]);
+        }
+        
+        currentBuffer = null;
+    }, FLUSH_INTERVAL_MS);
 
     const getLogStream = (onComplete) => {
         onComplete(_logBuffer.join('\n'));
     };
 
-    const writeLogMessage = (msg) => {
+    const internalWriteMessage = (prefix, msg) => {
         let d = moment().toISOString(true);
-        let formattedMsg = `[${d}]: INFO: ${msg}`;
+        let formattedMsg = `[${d}]: ${prefix}: ${msg}`;
         _logBuffer.push(formattedMsg);
+    };
+
+    const writeLogMessage = (msg) => {
+        internalWriteMessage("INFO", msg);
     };
 
     const writeWarningMessage = (msg) => {
-        let d = moment().toISOString(true);
-        let formattedMsg = `[${d}]: WARNING: ${msg}`;
-        _logBuffer.push(formattedMsg);
+        internalWriteMessage("WARNING", msg);
     };
 
     const writeErrorMessage = (msg) => {
-        let d = moment().toISOString(true);
-        let formattedMsg = `[${d}]: ERROR: ${msg}`;
-        _logBuffer.push(formattedMsg);
+        internalWriteMessage("ERROR", msg);
     };
 
     // Module exports

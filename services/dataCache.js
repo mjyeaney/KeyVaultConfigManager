@@ -75,6 +75,21 @@
         }
     };
 
+    const removeCachedItem = (key, callback) => {
+        // Check feature flag
+        if (settings.DisableDataCache){
+            logger.LogWarning("Cache dislabled");
+        } else {
+            logger.Log("Removing cache item...");
+            _cache[key] = undefined;
+            logger.Log("Done!");
+        }
+
+        if (callback != null){
+            callback();
+        }
+    };
+
     const getCacheStats = (callback) => {
         if (callback != null){
             callback("TODO");
@@ -84,5 +99,6 @@
     // Method exports
     scope.DataCache.Get = getCachedItem;
     scope.DataCache.Set = setCachedItem;
+    scope.DataCache.Remove = removeCachedItem;
     scope.DataCache.GetCacheStats = getCacheStats;
 })(this);

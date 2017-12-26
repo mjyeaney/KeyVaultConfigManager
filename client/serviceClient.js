@@ -23,9 +23,9 @@
         });
     };
 
-    const getSettings = function(onComplete, onError){
+    const getSettings = function(vaultName, onComplete, onError){
         $.ajax({
-            url: `/vaultSettings/${StateManager.CurrentVault}`,
+            url: `/vaultSettings/${vaultName}`,
             success: function(data){
                 onComplete(data);
             },
@@ -36,9 +36,26 @@
         });
     };
 
-    const getSettingValue = function(onComplete, onError){
+    const getSettingValue = function(vaultName, settingName, onComplete, onError){
         $.ajax({
-            url: `/vaultSetting/${StateManager.CurrentVault}/${StateManager.CurrentSetting}`,
+            url: `/vaultSetting/${vaultName}/${settingName}`,
+            success: function(data){
+                onComplete(data);
+            },
+            error: function(e){
+                let msg = `${e.status}: ${e.statusText}`;
+                onError(msg);
+            }
+        });
+    };
+
+    const saveSettingValue = function(vaultName, settingName, newValue, onComplete, onError){
+        $.ajax({
+            type: "POST",
+            url: `/vaultSetting/${vaultName}/${settingName}`,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: JSON.stringify({ settingValue: newValue }),
             success: function(data){
                 onComplete(data);
             },
@@ -79,6 +96,7 @@
     scope.ServiceClient.GetVaults = getVaults;
     scope.ServiceClient.GetSettings = getSettings;
     scope.ServiceClient.GetSettingValue = getSettingValue;
+    scope.ServiceClient.SaveSettingValue = saveSettingValue;
     scope.ServiceClient.GetLogStream = getLogStream;
     scope.ServiceClient.GetCacheStats = getCacheStats;
 })(this);

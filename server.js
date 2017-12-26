@@ -9,12 +9,19 @@
 // Pull in libs and bootstrap express application
 //
 const express = require("express"),
+    bodyParser = require("body-parser"),
     logger = require("./services/logger.js").Logger,
     dataCache = require("./services/dataCache.js").DataCache,
     core = require("./services/application.js").Application;
     
 // Init the express engine
 const app = express();
+
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
+ 
+// parse application/json
+app.use(bodyParser.json())
 
 // Check for the PORT env var from the azure host
 const port = process.env.PORT || 8009;
@@ -53,7 +60,22 @@ app.get("/vaultSettings/:vaultName", (req, resp) => {
 app.get("/vaultSetting/:vaultName/:settingName", (req, resp) => {
     setNoCache(resp);
     core.GetKeyVaultSetting(req.params.vaultName, req.params.settingName, (err, response) => {
-        resp.json(response);
+        if (err){
+            resp.status(500).send(err);
+        } else {
+            resp.json(response);
+        }
+    });
+});
+
+app.post("/vaultSetting/:vaultName/:settingName", (req, resp) => {
+    setNoCache(resp);
+    core.SetKeyVaultSetting(req.params.vaultName, req.params.settingName, req.body.settingValue, (err, response) => {
+        if (err){
+            resp.status(500).send(err);
+        } else {
+            resp.json(response);
+        }
     });
 });
 

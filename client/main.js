@@ -3,61 +3,6 @@
 //
 
 $(function(){
-    //
-    // UI Event handlers
-    //
-    const routeLocation = function(){
-        
-        ViewModel.ResetView();
-        
-        // TODO: state manager should handle this
-        let hash = location.hash;
-        let cmd = "";
-        let param = "";
-        
-        if (hash !== ""){
-            let parts = hash.split('/');
-            cmd = parts[1];
-            param = parts[2];
-        }
-
-        switch (cmd){
-            case "listVaults":
-                ViewModel.SetBusyState();
-                ViewModel.SetTitle("Vaults");
-                ServiceClient.GetVaults(ViewModel.RenderVaults, ViewModel.SetErrorState);
-                break;
-            case "settings":
-                ViewModel.SetBusyState();
-                ViewModel.SetTitle("Settings")
-                StateManager.CurrentVault = param;
-                StateManager.CurrentSetting = "";
-                ServiceClient.GetSettings(ViewModel.RenderSettings, ViewModel.SetErrorState);
-                break;
-            case "setting":
-                ViewModel.SetBusyState();
-                ViewModel.SetTitle("Edit Setting");
-                StateManager.CurrentSetting = param;
-                ServiceClient.GetSettingValue(ViewModel.RenderSetting, ViewModel.SetErrorState);
-                break;
-            case "logStream":
-                ViewModel.SetBusyState();
-                ViewModel.SetTitle("LogStream");
-                ServiceClient.GetLogStream(ViewModel.RenderLogStream, ViewModel.SetErrorState);
-                break;
-            case "cacheStats":
-                ViewModel.SetBusyState();
-                ViewModel.SetTitle("Cache Stats");
-                ServiceClient.GetCacheStats(ViewModel.RenderCacheStats, ViewModel.SetErrorState);
-                break;
-            case "":
-                $("p.getStarted").show();
-                break;            
-            default:
-                $("p.unknown").show();
-                break;
-        }
-    };
 
     $(document).on("click", "#content ul li.vault", function(e){
         let resId = e.target.dataset["id"];
@@ -72,13 +17,14 @@ $(function(){
     $(document).on("click", "#secretEditor a.close", function(e){
         history.go(-1);
     });
+
+    $(document).on("click", "#secretEditor a.update", function(e){
+        StateManager.PersistSettingEdits();
+    });
     
     $(window).bind("hashchange", function(e) { 
-        routeLocation();
+        StateManager.UpdateCurrentState(location.hash);
     });
 
-    //
-    // Initial UI state/setup
-    //
-    routeLocation();
+    StateManager.UpdateCurrentState(location.hash);
 });

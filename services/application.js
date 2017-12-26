@@ -110,8 +110,32 @@
         });
     };
 
+    const setKeyVaultSetting = function(vaultName, settingName, settingValue, onComplete){
+        let cacheKey = `${CACHE_GET_KV_SECRET}:${vaultName}:${settingName}`;
+
+        // Read/get our access credentials from the token cache
+        tokenCache.AcquireToken(KEYVAULT_MGMT_URI, (credentials) => {
+            // Creates an AKV client
+            logger.Log("Setting secret value...");
+            let client = new KeyVault.KeyVaultClient(credentials);
+            let vaultBaseUrl = `https://${vaultName}.vault.azure.net`;
+
+            client.setSecret(vaultBaseUrl, settingName, settingValue, (err, results) => {
+                if (err){
+                    logger.LogError(err);
+                    onComplete(err);
+                } else {
+                    logger.Log("Done!");
+                    dataCache.Remove(cacheKey);
+                    onComplete(null, results);
+                }
+            });
+        });
+    };
+
     // Export methods
     scope.Application.ListKeyVaults = listKeyVaults;
     scope.Application.GetKeyVaultSettings = getKeyVaultSettings;
     scope.Application.GetKeyVaultSetting = getKeyVaultSetting;
+    scope.Application.SetKeyVaultSetting = setKeyVaultSetting;
 })(this);

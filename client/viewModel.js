@@ -54,6 +54,13 @@
         $("p.progress").hide();
     };
 
+    const readSettingEditorVaules = () => {
+        let editorData = {};
+        // TODO: Fill out other details (i.e, disabled, etc);
+        editorData.Value = $('#txtSecretValue').val();
+        return editorData;
+    };
+
     const renderLogStream = function(logStream){
         $("p.progress").hide();
         $("pre.logViewer").show();
@@ -90,6 +97,7 @@
     scope.ViewModel.RenderVaults = renderVaults;
     scope.ViewModel.RenderSettings = renderSettings
     scope.ViewModel.RenderSetting = renderSetting;
+    scope.ViewModel.ReadSettingEditorVaules = readSettingEditorVaules;
     scope.ViewModel.RenderLogStream = renderLogStream;
     scope.ViewModel.RenderCacheStats = renderCacheStats;
     scope.ViewModel.SetTitle = setTitle;
