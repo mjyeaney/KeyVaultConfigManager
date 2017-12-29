@@ -7,6 +7,9 @@
         scope.StateManager = {};
     }
 
+    let currentVault = "",
+     currentSetting = "";
+
     //
     // UI Event handlers
     //
@@ -14,9 +17,7 @@
         
         // Parse state location
         let cmd = "",
-            param = "",
-            currentVault = "",
-            currentSetting = "";
+            param = "";
         
         if (currentLocationHash !== ""){
             let parts = currentLocationHash.split('/');
@@ -34,20 +35,20 @@
                 ServiceClient.GetVaults(ViewModel.RenderVaults, ViewModel.SetErrorState);
                 break;
             case "settings":
-                StateManager.CurrentVault = param;
-                StateManager.CurrentSetting = "";    
+                currentVault = param;
+                currentSetting = "";    
                 ViewModel.SetBusyState();
                 ViewModel.SetTitle("Settings")
-                ServiceClient.GetSettings(StateManager.CurrentVault, 
+                ServiceClient.GetSettings(currentVault, 
                     ViewModel.RenderSettings, 
                     ViewModel.SetErrorState);
                 break;
             case "setting":
-                StateManager.CurrentSetting = param;    
+                currentSetting = param;    
                 ViewModel.SetBusyState();
                 ViewModel.SetTitle("Edit Setting");
-                ServiceClient.GetSettingValue(StateManager.CurrentVault, 
-                    StateManager.CurrentSetting,
+                ServiceClient.GetSettingValue(currentVault, 
+                    currentSetting,
                     ViewModel.RenderSetting, 
                     ViewModel.SetErrorState);
                 break;
@@ -73,16 +74,19 @@
     const persistSettingEdits = function(){
         let newSetting = ViewModel.ReadSettingEditorVaules();
 
-        ServiceClient.SaveSettingValue(StateManager.CurrentVault,
-            StateManager.CurrentSetting,
+        ServiceClient.SaveSettingValue(currentVault,
+            currentSetting,
             newSetting.Value,
             () => {
                 history.go(-1);
             });
     };
 
+    const goPreviousState = () => {
+        history.go(-1);
+    };
+
     scope.StateManager.UpdateCurrentState = updateCurrentState;
     scope.StateManager.PersistSettingEdits = persistSettingEdits;
-    scope.StateManager.CurrentVault = "";
-    scope.StateManager.CurrentSetting = "";
+    scope.StateManager.GoPreviousState = goPreviousState;
 })(this);

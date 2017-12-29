@@ -11,6 +11,7 @@
 const express = require("express"),
     bodyParser = require("body-parser"),
     logger = require("./services/logger.js").Logger,
+    settings = require("./settings.js").Settings,
     dataCache = require("./services/dataCache.js").DataCache,
     core = require("./services/application.js").Application;
     
@@ -91,6 +92,11 @@ app.get("/cacheStats", (req, resp) => {
     dataCache.GetCacheStats((stream) => {
         resp.json(stream);
     })
+});
+
+app.get("/clientSettings", (req, resp) => {
+    setNoCache(resp);
+    resp.json(settings.ClientConfiguration);
 });
 
 //

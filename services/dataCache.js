@@ -9,29 +9,38 @@
 
 (function(scope){
     const settings = require('../settings.js').Settings,
-        logger = require("../services/logger.js").Logger;
+        logger = require("../services/logger.js").Logger,
+        redis = require("redis");
 
     // Define module namespace
     if (!scope.DataCache){
         scope.DataCache = {};
     }
 
-    // Simple in-memory cache to start with
-    let _cache = {},
-        _hits = 0,
+    // our redis client
+    let cacheClient = redis.createClient(settings.RedisPort, 
+        settings.RedisClusterName, 
+        { 
+            auth_pass: settings.RedisAuthKey, 
+            tls: {
+                servername: settings.RedisClusterName
+            }
+        });
+
+    // Cache metrics
+    let _hits = 0,
         _total = 0;
 
-    // auto purge of data cache
-    const refreshCache = () => {
-        logger.Log("Purging cached data...");
-        _cache = {};
-        _hits = 0;
-        _total = 0;
-    };
+    // // auto purge of data cache
+    // const refreshCache = () => {
+    //     logger.Log("Purging cached data...");
+    //     _hits = 0;
+    //     _total = 0;
+    // };
 
     // Create background job to purge cache
-    logger.Log(`Starting data cache services...default lifetime = ${settings.DefaultCacheLifetimeSec}`);
-    setInterval(refreshCache, settings.DefaultCacheLifetimeSec * 1000)
+    //logger.Log(`Starting data cache services...default lifetime = ${settings.DefaultCacheLifetimeSec}`);
+    //setInterval(refreshCache, settings.DefaultCacheLifetimeSec * 1000)
 
     // Makes a call into the cache to check for an item
     const getCachedItem = (key, callback) => {
@@ -46,15 +55,17 @@
                 callback();
             } else {
                 logger.Log(`Reading data cache; key=${key}`);
-                let item = _cache[key];
-                _total++;
-                if (!item){
-                    logger.LogWarning(`Done - data cache miss (ratio = ${computeRatio(_hits, _total)})`);
-                } else {
-                    _hits++;
-                    logger.Log(`Done - data cache hit (ratio = ${computeRatio(_hits, _total)})`);
-                }
-                callback(item);
+                cacheClient.get(key, (err, item) => {
+                    _total++;
+                    if ((err) || (!item)){
+                        logger.LogWarning(`Done - data cache miss (ratio = ${computeRatio(_hits, _total)})`);
+                        callback();
+                    } else {
+                        _hits++;
+                        logger.Log(`Done - data cache hit (ratio = ${computeRatio(_hits, _total)})`);
+                        callback(JSON.parse(item));
+                    }
+                });
             }
         }
     };
@@ -66,12 +77,13 @@
             logger.LogWarning("Cache dislabled");
         } else {
             logger.Log("Updating data cache...");
-            _cache[key] = data;
-            logger.Log("Done!");
-        }
+            cacheClient.set(key, JSON.stringify(data), (err, result) => {
+                logger.Log("Done!");
 
-        if (callback != null){
-            callback();
+                if (callback != null){
+                    callback();
+                }
+            });
         }
     };
 
@@ -81,7 +93,7 @@
             logger.LogWarning("Cache dislabled");
         } else {
             logger.Log("Removing cache item...");
-            _cache[key] = undefined;
+            cacheClient.del(key);
             logger.Log("Done!");
         }
 

@@ -15,7 +15,7 @@ $(function(){
     });
 
     $(document).on("click", "#secretEditor a.close", function(e){
-        history.go(-1);
+        StateManager.GoPreviousState();
     });
 
     $(document).on("click", "#secretEditor a.update", function(e){

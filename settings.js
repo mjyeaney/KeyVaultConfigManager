@@ -18,6 +18,9 @@
     scope.Settings.Key = process.env.KVCM_Key;
     scope.Settings.SubscriptionID = process.env.KVCM_SubscriptionId;
     scope.Settings.Tenant = process.env.KVCM_Tenant;
+    scope.Settings.RedisClusterName = process.env.KVCM_RedisClusterName;
+    scope.Settings.RedisAuthKey = process.env.KVCM_RedisAuthKey;
+    scope.Settings.RedisPort = parseInt(process.env.KVCM_RedisPort);
 
     // ADAL/Data cache refresh interval
     scope.Settings.DefaultTokenLifetimeSec = 120;
@@ -28,6 +31,9 @@
     scope.Settings.IsRunningLocal = false;
     scope.Settings.DisableDataCache = false;
     scope.Settings.DisableAdalCache = false;
+
+    // Client flags (as-needed)
+    scope.Settings.ClientConfiguration = {};
 
     // Look for any local / environmental overrides
     try {
