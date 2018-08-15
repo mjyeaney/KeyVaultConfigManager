@@ -1,10 +1,10 @@
 //
 // Global configuration settings; override per-environment settings in settings.local.js
+//
+// TODO: Convert this to environment variables
 // 
 
 (function(scope){
-    //var logger = require('./services/logger.js').Logger;
-
     // Create namespace container
     if (!scope.Settings){
         scope.Settings = {};
@@ -26,7 +26,6 @@
     // ADAL/Data cache refresh interval
     scope.Settings.DefaultTokenLifetimeSec = 120;
     scope.Settings.DefaultCacheLifetimeSec = 240;
-    //logger.Log("Default settings initialized...");
 
     // Feature flags
     scope.Settings.IsRunningLocal = false;
@@ -41,9 +40,9 @@
         var locals = require('./settings.local.js').Locals;
         locals.Apply(scope.Settings);
         scope.Settings.IsRunningLocal = true;
-        //logger.Log("Local overrides applied!!!");
     } catch(e){
-        //logger.Log("Unable to locate local overrides");
+        // No local override found...
+        console.log("No local override settings found");
     }
     
 })(this);
