@@ -17,6 +17,10 @@
         scope.DataCache = {};
     }
 
+    // Cache metrics
+    let _hits = 0,
+        _total = 0;
+
     // our redis client
     let cacheClient = redis.createClient(settings.RedisPort, 
         settings.RedisClusterName, 
@@ -27,16 +31,15 @@
             }
         });
 
-    // Cache metrics
-    let _hits = 0,
+    // auto purge of data cache
+    const refreshCache = () => {
+        logger.Log("Purging cached data...");
+        _hits = 0;
         _total = 0;
-
-    // // auto purge of data cache
-    // const refreshCache = () => {
-    //     logger.Log("Purging cached data...");
-    //     _hits = 0;
-    //     _total = 0;
-    // };
+        cacheClient.flushdb((err, reply) => {
+            logger.Log("Done!");
+        })
+    };
 
     // Create background job to purge cache
     //logger.Log(`Starting data cache services...default lifetime = ${settings.DefaultCacheLifetimeSec}`);
@@ -77,6 +80,9 @@
             logger.LogWarning("Cache dislabled");
         } else {
             logger.Log("Updating data cache...");
+            // cacheClient.watch();
+            // cacheClient.get(...);
+            // cacheClient.multi(["SET", key, JSON.stringify(data)]).exec();
             cacheClient.set(key, JSON.stringify(data), (err, result) => {
                 logger.Log("Done!");
 

@@ -7,10 +7,10 @@
         scope.Logger = {};
     }
 
-    let moment = require('moment');
-    let _logBuffer = [];
+    let moment = require("moment"),
+        settings = require("../settings.js").Settings;
 
-    const FLUSH_INTERVAL_MS = 15000;
+    let _logBuffer = [];
 
     // background writer thread
     setInterval(() => {
@@ -24,7 +24,7 @@
         }
         
         currentBuffer = null;
-    }, FLUSH_INTERVAL_MS);
+    }, settings.LogFlushIntervalMs);
 
     const getLogStream = (onComplete) => {
         onComplete(_logBuffer.join('\n'));
