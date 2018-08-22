@@ -54,7 +54,11 @@ app.get("/vaults", (req, resp) => {
 app.get("/vaultSettings/:vaultName", (req, resp) => {
     setNoCache(resp);
     core.GetKeyVaultSettings(req.params.vaultName, (err, response) => {
-        resp.json(response);
+        if (err){
+            resp.status(500).send(err);
+        } else {
+            resp.json(response);
+        }
     });
 });
 

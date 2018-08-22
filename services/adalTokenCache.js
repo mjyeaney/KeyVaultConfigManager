@@ -6,8 +6,7 @@
 (function(scope){
     const settings = require('../settings.js').Settings,
         logger = require('./logger.js').Logger,
-        adal = require('adal-node'),
-        AzureCommon = require("azure-common");
+        msRestAzure = require("ms-rest-azure");
     
     // Ensure namepsace
     if (!scope.TokenCache){
@@ -29,33 +28,24 @@
 
     const _internalAcquireToken = (resourceUri, onComplete) => {
         // Setup ADAL parameters
-        let authorityHostUrl = 'https://login.windows.net';
-        let tenant = settings.Tenant;
-        let authorityUrl = authorityHostUrl + '/' + tenant;
         let clientId = settings.ClientID;
         let clientSecret = settings.Key;
 
-        // Create ADAL context
-        let AuthenticationContext = adal.AuthenticationContext;
-        let context = new AuthenticationContext(authorityUrl);
+        let authorityHostUrl = 'https://login.windows.net';
+        let tenant = settings.Tenant;
+        let authorityUrl = authorityHostUrl + '/' + tenant;
 
         // Use secrets to get a token
         logger.Log("Acquiring token...");
-        context.acquireTokenWithClientCredentials(resourceUri, clientId, clientSecret, (err, tokenResponse) => {
+        msRestAzure.loginWithServicePrincipalSecret(clientId, clientSecret, tenant, (err, credentials, subscriptions) => {
             if (err) {
-                logger.LogError('ERROR: ' + err.stack);
+                logger.LogError(err.stack);
                 onComplete(err);
+            } else {
+                logger.Log("Token acquired...creating TokenCloudCredentials...");  
+                logger.Log(JSON.stringify(credentials));
+                onComplete(null, credentials);
             }
-
-            logger.Log("Token acquired...creating TokenCloudCredentials...");  
-
-            let credentials = new AzureCommon.TokenCloudCredentials({
-                subscriptionId : settings.SubscriptionID,
-                authorizationScheme : tokenResponse.tokenType,
-                token : tokenResponse.accessToken
-            });
-
-            onComplete(credentials);
         });
     };
 
@@ -63,9 +53,9 @@
     const acquireToken = (resourceUri, callback) => {
         // check feature flag 
         if (settings.DisableAdalCache){
-            _internalAcquireToken(resourceUri, (credentials) => {
+            _internalAcquireToken(resourceUri, (err, credentials) => {
                 logger.Log("Token acquired (ADAL Cache disabled) - resuming execution");
-                callback(credentials);
+                callback(err, credentials);
             })
             return;
         }
@@ -73,10 +63,10 @@
         // check cache first
         if (!_tokenCache[resourceUri]){
             logger.LogWarning("Token cache MISS...acquiring token...");
-            _internalAcquireToken(resourceUri, (credentials) => {
+            _internalAcquireToken(resourceUri, (err, credentials) => {
                 logger.Log("Token acquired - resuming execution");
                 _tokenCache[resourceUri] = credentials;
-                callback(credentials);
+                callback(err, credentials);
             })
         } else {
             logger.Log("Token cache HIT!");

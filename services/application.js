@@ -27,7 +27,7 @@
         dataCache.Get(CACHE_LIST_KEYVAULTS, (list) => {
             if (!list){
                 // Read/get our access credentials from the token cache
-                tokenCache.AcquireToken(ARM_MGMT_URI, (credentials) => {
+                tokenCache.AcquireToken(ARM_MGMT_URI, (err, credentials) => {
                     // Creates an ARM client
                     logger.Log("Getting list of KeyVaults...");
                     let client = new keyVaultManagementClient(credentials, settings.SubscriptionID);
@@ -54,7 +54,7 @@
         dataCache.Get(cacheKey, (list) => {
             if (!list){
                 // Read/get our access credentials from the token cache
-                tokenCache.AcquireToken(KEYVAULT_MGMT_URI, (credentials) => {
+                tokenCache.AcquireToken(KEYVAULT_MGMT_URI, (err, credentials) => {
                     // Creates an AKV client
                     logger.Log("Getting list of Secrets...");
                     let client = new KeyVault.KeyVaultClient(credentials);
@@ -87,13 +87,14 @@
         dataCache.Get(cacheKey, (list) => {
             if (!list){        
                 // Read/get our access credentials from the token cache
-                tokenCache.AcquireToken(KEYVAULT_MGMT_URI, (credentials) => {
+                tokenCache.AcquireToken(KEYVAULT_MGMT_URI, (err, credentials) => {
                     // Creates an AKV client
                     logger.Log("Getting secret value...");
                     let client = new KeyVault.KeyVaultClient(credentials);
-                    let secretUri = `https://${vaultName}.vault.azure.net/secrets/${settingName}/`;
+                    let vaultBaseUrl = `https://${vaultName}.vault.azure.net`;
+                    let latestVersion = '';
 
-                    client.getSecret(secretUri, (err, results) => {
+                    client.getSecret(vaultBaseUrl, settingName, latestVersion, (err, results) => {
                         if (err){
                             logger.LogError(err);
                             onComplete(err);
@@ -114,7 +115,7 @@
         let cacheKey = `${CACHE_GET_KV_SECRET}:${vaultName}:${settingName}`;
 
         // Read/get our access credentials from the token cache
-        tokenCache.AcquireToken(KEYVAULT_MGMT_URI, (credentials) => {
+        tokenCache.AcquireToken(KEYVAULT_MGMT_URI, (err, credentials) => {
             // Creates an AKV client
             logger.Log("Setting secret value...");
             let client = new KeyVault.KeyVaultClient(credentials);
