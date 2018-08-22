@@ -79,6 +79,9 @@
             newSetting.Value,
             () => {
                 history.go(-1);
+            },
+            (err) => {
+                alert(err);
             });
     };
 

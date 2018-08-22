@@ -42,8 +42,8 @@
     };
 
     // Create background job to purge cache
-    //logger.Log(`Starting data cache services...default lifetime = ${settings.DefaultCacheLifetimeSec}`);
-    //setInterval(refreshCache, settings.DefaultCacheLifetimeSec * 1000)
+    logger.Log(`Starting data cache services...default lifetime = ${settings.DefaultCacheLifetimeSec}`);
+    setInterval(refreshCache, settings.DefaultCacheLifetimeSec * 1000)
 
     // Makes a call into the cache to check for an item
     const getCachedItem = (key, callback) => {

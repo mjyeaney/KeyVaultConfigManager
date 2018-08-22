@@ -39,8 +39,8 @@
                 logger.LogError(err.stack);
                 onComplete(err);
             } else {
-                logger.Log("Token acquired...creating TokenCloudCredentials...");  
-                logger.Log(JSON.stringify(credentials));
+                logger.Log("Token acquired...continuing");
+                //logger.Log(JSON.stringify(credentials));
                 onComplete(null, credentials);
             }
         });
@@ -74,7 +74,7 @@
             })
         } else {
             logger.Log("Token cache HIT!");
-            callback(_tokenCache[resourceUri]);
+            callback(null, _tokenCache[resourceUri]);
         }
     };
 

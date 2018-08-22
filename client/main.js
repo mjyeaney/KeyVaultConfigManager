@@ -5,12 +5,20 @@
 $(function(){
 
     $(document).on("click", "#content ul li.vault", function(e){
-        let resId = e.target.dataset["id"];
+        let src = e.target;
+        if (src.nodeName !== "LI"){
+            src = src.parentNode;
+        }
+        let resId = src.dataset["id"];
         location.hash = "#/settings/" + resId;
     });
     
     $(document).on("click", "#content ul li.setting", function(e){
-        let resId = e.target.dataset["id"];
+        let src = e.target;
+        if (src.nodeName !== "LI"){
+            src = src.parentNode;
+        }
+        let resId = src.dataset["id"];
         location.hash = "#/setting/" + resId;
     });
 
