@@ -8,7 +8,6 @@
         logger = require("../services/logger.js").Logger,
         tokenCache = require("../services/adalTokenCache.js").TokenCache,
         dataCache = require("../services/dataCache.js").DataCache,
-        AzureCommon = require("azure-common"),
         keyVaultManagementClient = require("azure-arm-keyvault"),
         KeyVault = require("azure-keyvault");
 
@@ -88,22 +87,26 @@
             if (!list){        
                 // Read/get our access credentials from the token cache
                 tokenCache.AcquireToken(KEYVAULT_MGMT_URI, (err, credentials) => {
-                    // Creates an AKV client
-                    logger.Log("Getting secret value...");
-                    let client = new KeyVault.KeyVaultClient(credentials);
-                    let vaultBaseUrl = `https://${vaultName}.vault.azure.net`;
-                    let latestVersion = '';
+                    if (!err) {
+                        // Creates an AKV client
+                        logger.Log("Getting secret value...");
+                        let client = new KeyVault.KeyVaultClient(credentials);
+                        let vaultBaseUrl = `https://${vaultName}.vault.azure.net`;
+                        let latestVersion = '';
 
-                    client.getSecret(vaultBaseUrl, settingName, latestVersion, (err, results) => {
-                        if (err){
-                            logger.LogError(err);
-                            onComplete(err);
-                        } else {
-                            logger.Log("Done!");
-                            dataCache.Set(cacheKey, results);
-                            onComplete(null, results);
-                        }
-                    });
+                        client.getSecret(vaultBaseUrl, settingName, latestVersion, (err, results) => {
+                            if (err){
+                                logger.LogError(err);
+                                onComplete(err);
+                            } else {
+                                logger.Log("Done!");
+                                dataCache.Set(cacheKey, results);
+                                onComplete(null, results);
+                            }
+                        });
+                    } else {
+                        onComplete(err);
+                    }
                 });
             } else {
                 onComplete(null, list);
@@ -116,21 +119,25 @@
 
         // Read/get our access credentials from the token cache
         tokenCache.AcquireToken(KEYVAULT_MGMT_URI, (err, credentials) => {
-            // Creates an AKV client
-            logger.Log("Setting secret value...");
-            let client = new KeyVault.KeyVaultClient(credentials);
-            let vaultBaseUrl = `https://${vaultName}.vault.azure.net`;
+            if (!err) {
+                // Creates an AKV client
+                logger.Log("Setting secret value...");
+                let client = new KeyVault.KeyVaultClient(credentials);
+                let vaultBaseUrl = `https://${vaultName}.vault.azure.net`;
 
-            client.setSecret(vaultBaseUrl, settingName, settingValue, (err, results) => {
-                if (err){
-                    logger.LogError(err);
-                    onComplete(err);
-                } else {
-                    logger.Log("Done!");
-                    dataCache.Remove(cacheKey);
-                    onComplete(null, results);
-                }
-            });
+                client.setSecret(vaultBaseUrl, settingName, settingValue, (err, results) => {
+                    if (err){
+                        logger.LogError(err);
+                        onComplete(err);
+                    } else {
+                        logger.Log("Done!");
+                        dataCache.Remove(cacheKey);
+                        onComplete(null, results);
+                    }
+                });
+            } else {
+                onComplete(err);
+            }
         });
     };
 

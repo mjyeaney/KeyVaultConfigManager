@@ -30,10 +30,7 @@
         // Setup ADAL parameters
         let clientId = settings.ClientID;
         let clientSecret = settings.Key;
-
-        let authorityHostUrl = 'https://login.windows.net';
         let tenant = settings.Tenant;
-        let authorityUrl = authorityHostUrl + '/' + tenant;
 
         // Use secrets to get a token
         logger.Log("Acquiring token...");
@@ -54,7 +51,10 @@
         // check feature flag 
         if (settings.DisableAdalCache){
             _internalAcquireToken(resourceUri, (err, credentials) => {
-                logger.Log("Token acquired (ADAL Cache disabled) - resuming execution");
+                logger.Log("(ADAL Cache disabled) - resuming execution");
+                if (err){
+                    logger.LogError(err);
+                }
                 callback(err, credentials);
             })
             return;
@@ -65,7 +65,11 @@
             logger.LogWarning("Token cache MISS...acquiring token...");
             _internalAcquireToken(resourceUri, (err, credentials) => {
                 logger.Log("Token acquired - resuming execution");
-                _tokenCache[resourceUri] = credentials;
+                if (!err) {
+                    _tokenCache[resourceUri] = credentials;
+                } else {
+                    logger.LogError(err);
+                }
                 callback(err, credentials);
             })
         } else {
